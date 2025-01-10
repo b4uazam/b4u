@@ -90,7 +90,7 @@ By focusing on **specialized AI/ML engineering roles**, you will position yourse
 - **Leadership opportunities**: As you gain more experience, you can move into leadership roles such as AI Team Lead, Chief Data Scientist, or AI Architect.
 
 - **Wide applicability**: AI is transforming various industries (healthcare, finance, autonomous driving, etc.), providing plenty of opportunities to work on diverse and high-impact projects.
-===================================================================================================================================================================================
+!!!!=============================================================================================================================================================================!!!!
 - Based on your friend's skills and experience, they have a strong background in data analysis, problem-solving, and customer service within a technical context. They also appear to have worked with technical support, issue resolution, training, and performance monitoring. Given their goal to transition to AI or machine learning (ML) roles that involve less coding, here are some suitable roles:
 
 ---
