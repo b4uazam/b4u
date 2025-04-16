@@ -1,72 +1,56 @@
-Here’s a structured **description** for your EPIC, covering **Summary of Change**, **Implementation**, and **Application Details**:  
+Here’s a simplified and corrected version of the content for a layman reader:
 
 ---
 
-### **1. Summary of Change**  
-**Objective:**  
-Optimize the ICL booking flow performance by refactoring inefficient **DAG (Directed Acyclic Graph) calls** that introduce latency, improving user experience and reducing business losses.  
+### **Project Overview**  
+The goal is to enhance the existing system (shown in green boxes) by adding new functionality (white boxes) as part of development task **Epic-6FITFUN-4431**.  
 
-**Scope:**  
-- Target: Booking flow modules with slow DAG evaluations.  
-- Outcome: Faster load times, higher booking completion rates.  
+### **What Needs to Be Done?**  
+1. **Create an EOD Container**:  
+   - This container will handle CFO risk for non-USD accrual products.  
+   - It will populate "Publishable Units (PU)" and related tables.  
 
-**Key Metrics:**  
-- Reduce DAG call execution time by **≥50%** (e.g., from 2000ms to 1000ms).  
-- Improve booking flow completion rate by **X%**.  
+2. **Build Calculators for Risk**:  
+   - Develop calculators to measure **Interest Rate (IR)** and **Foreign Exchange (FX)** risks for these products:  
+     - ICL, MW, FX Capital, Cash, and Economic Debt.  
+   - The calculators must:  
+     - Include all accrual products from the Central Data Model (CDM).  
+     - Run only after all data is loaded.  
+     - Publish IR & FX risk data to "Zinc Official" under a snapshot.  
 
----
+3. **Coordination**:  
+   - Work with the Zinc team to ensure the snapshot system works correctly and PUs are loaded as expected.  
 
-### **2. How Was the Change Implemented?**  
-**Implementation Steps:**  
-1. **Analysis & Benchmarking:**  
-   - Profiled slow DAG calls using [tools: APM, logs].  
-   - Identified bottlenecks (e.g., sequential dependencies, redundant queries).  
+### **Non-Functional Requirements**  
+- The system must meet the End-of-Day (EOD) deadline (SLA).  
+- Existing functionality should not be disrupted.  
+- Documentation must be updated.  
 
-2. **Refactoring Strategies:**  
-   - **Replaced DAG calls** with optimized in-memory logic for static rules.  
-   - **Introduced caching** (e.g., Redis) for repeatable evaluations.  
-   - **Parallelized** independent DAG nodes where possible.  
+### **Testing Steps**  
+1. Verify that the updated EOD stack includes new jobs.  
+2. Check that data flows from CDM to the sandra database at:  
+   `/Applications/CFORisk/frtb/` (with separate folders for each product).  
+3. Confirm that IR & FX risk values match the data in CDM.  
+4. Ensure the EOD containers for "Deal & Finance PU" are populated.  
+5. Validate that tables and data are stored here:  
+   `/Closes/CFO.CFORISK.FATB.AMBS/(patchDate)/EOO/PublishableUnits/`.  
+6. Test with Zinc to confirm snapshots work and data appears in Zinc Official.  
 
-3. **Testing & Validation:**  
-   - A/B tested refactored flows against legacy DAG calls.  
-   - Validated performance gains using synthetic/user traffic.  
+### **Assumptions**  
+- All required data is already available in CDM.  
+- Currently, risk data for the 5 products (ICL, MW, FX Capital, Cash, Econ Debt) is sent to **Zinc FATB** but not to **Zinc Official**.  
+- Only MRS can read from Zinc Official, which sends data to **Zinc DO Hub** (for daily quality checks).  
 
-**Tools & Tech:**  
-- Profiling: New Relic/Datadog.  
-- Caching: Redis/Memcached.  
-- Code: [Languages/frameworks used, e.g., Python, Airflow].  
+### **Summary of Changes**  
+- No new system is needed—just add new jobs to the existing **EOD stack** (`eod_cfrosik_frtb_amrs`).  
+- Fetch trade data from CDM for the 5 products and store it in the "corp_zf" ring of the sandra database.  
+- Build IR & FX calculators and send feeds to Zinc Official.  
+- Collaborate with Zinc to set up registry-based snapshots.  
 
----
-
-### **3. Application Detail Changes**  
-**Before Refactoring:**  
-- DAG calls evaluated in real-time, causing delays.  
-- Booking flow latency: **2000ms avg**.  
-
-**After Refactoring:**  
-- **Logic Changes:**  
-  - Static rules moved to application memory.  
-  - Dynamic rules cached with **TTL: 5min**.  
-- **Architecture Changes:**  
-  - Decoupled DAG dependencies via async processing.  
-- **Results:**  
-  - Booking flow latency: **1000ms avg** (50% reduction).  
-  - CPU/memory usage improved by **30%**.  
-
-**Impacted Modules:**  
-- Booking eligibility checker.  
-- Pricing engine.  
-- Inventory resolver.  
-
-**Dependencies/Risks:**  
-- Requires monitoring cache invalidation logic.  
-- Legacy systems may still call DAGs (fallback needed).  
+### **Technical Impact**  
+- **No architecture changes**—only additional jobs in the existing EOD stack.  
+- **No UI changes**—data is pulled from CDM and stored in sandra DB for risk calculations.  
 
 ---
 
-### **Why This Structure?**  
-- **Summary:** Sets context/goals for stakeholders.  
-- **Implementation:** Replicable steps for engineers.  
-- **Details:** Helps QA/ops teams validate changes.  
-
-Need to adapt this for a **specific tool** (e.g., Jira)? I can reformat it!
+This version simplifies technical jargon and clarifies the purpose and steps for a non-technical audience. Let me know if you'd like further refinements!
